@@ -14,7 +14,10 @@ const CONFIG = {
   SUPPORT_EMAIL: 'infusionmedzone@gmail.com',
   SUPPORT_PHONE: '919381740718',
   PRIVACY_URL  : 'https://schandu7.github.io/infumedz/',
-  BLOOD_GROUPS : ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
+  VISIT_APP_NAME: 'inforedz-web',
+  VISIT_TRACK_URL: 'https://api.chandus7.in/api/track-visit/',
+  VISIT_STATS_URL: 'https://api.chandus7.in/api/visits/',
+   BLOOD_GROUPS : ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
   STOCK_GOOD: 15,
   STOCK_LOW : 5
 };
@@ -653,6 +656,34 @@ const UI = {
            '</div>';
   }
 };
+
+/* ------------------------------------------------------------
+   VISIT TRACKING — fire-and-forget, never blocks the UI
+   ------------------------------------------------------------ */
+const Visits = {
+  /** POST once per browser session. */
+  async track() {
+    if (Store.get('ir_visit_sent', false)) return;
+    Store.set('ir_visit_sent', true);
+    try {
+      await fetch(CONFIG.VISIT_TRACK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ app_name: CONFIG.VISIT_APP_NAME })
+      });
+    } catch (e) { /* tracking must never break the page */ }
+  },
+
+  /** Total visits for this app — used for the "Lives touched" figure. */
+  async total() {
+    try {
+      const r = await fetch(CONFIG.VISIT_STATS_URL + '?app_name=' + encodeURIComponent(CONFIG.VISIT_APP_NAME));
+      const j = await r.json();
+      return j.total_visits || 0;
+    } catch (e) { return null; }
+  }
+};
+
 
 /* ------------------------------------------------------------
    9. BOOT — every page calls this from pages.js
