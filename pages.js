@@ -888,11 +888,11 @@ const ProfilePage = {
            this.hero('Guest', 'Browsing without an account', 'G',
       [[s.total_donors, 'Donors'], [s.total_banks, 'Centres'], ['40', 'Visits']]);
 
-    const team = [
-      ['Dr. Akif Baig', 'CEO & Content Head', 'MBBS, DNB, DM (Cardiology)'],
-      ['Dr. M.A. Sameena Farheen', 'Founder & Editor', 'MBBS, MD (Gen Med)'],
-      ['Nihal Baig', 'Co-Founder & CTO', 'BTech & MTech (IITB)'],
-      ['Chandrasekhar', 'Engineering', 'B.Tech AI/ML']
+        const team = [
+      ['Dr. Akif Baig', 'CEO & Content Head', 'MBBS, DNB, DM (Cardiology)', 'team1.jpg'],
+      ['Dr. M.A. Sameena Farheen', 'Founder & Editor', 'MBBS, MD (Gen Med)', 'team2.jpg'],
+      ['Nihal Baig', 'Co-Founder & CTO', 'BTech & MTech (IITB)', 'team3.jpeg'],
+      ['Chandrasekhar', 'Engineering', 'B.Tech AI/ML', 'team4.jpg']
     ];
 
     document.getElementById('proBody').innerHTML =
@@ -912,11 +912,16 @@ const ProfilePage = {
 
           '<section class="panel"><div class="panel__body--static" style="padding-top:22px">' +
             '<h3 style="margin-bottom:16px">The team</h3>' +
-            '<div class="team-grid">' + team.map(([n, r, q]) =>
-              '<div class="team-card"><div class="team-card__pic">' + U.esc(U.initials(n)) + '</div>' +
-              '<div class="team-card__n">' + U.esc(n) + '</div>' +
-              '<div class="team-card__r">' + U.esc(r) + '</div>' +
-              '<div class="team-card__q">' + U.esc(q) + '</div></div>').join('') +
+                      '<div class="team-grid">' + team.map(([n, r, q, img]) =>
+              '<div class="team-card">' +
+                '<div class="team-card__pic">' +
+                  '<img src="' + U.esc(img) + '" alt="' + U.esc(n) + '" loading="lazy" ' +
+                  'onerror="this.replaceWith(document.createTextNode(\'' + U.esc(U.initials(n)) + '\'))">' +
+                '</div>' +
+                '<div class="team-card__n">' + U.esc(n) + '</div>' +
+                '<div class="team-card__r">' + U.esc(r) + '</div>' +
+                '<div class="team-card__q">' + U.esc(q) + '</div>' +
+              '</div>').join('') +
             '</div>' +
           '</div></section>' +
         '</div>' +
