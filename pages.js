@@ -47,6 +47,7 @@ const SplashPage = {
       else location.replace('auth.html');
     };
 
+      Visits.track();
     setTimeout(type, 520);
     document.getElementById('splashSkip').addEventListener('click', route);
   }
@@ -885,8 +886,10 @@ const ProfilePage = {
   async renderGuest() {
     let s = { total_donors: '—', total_banks: '—', cities: '—' };
     try { s = await Api.stats(); } catch (e) {}
+       const visits = await Visits.total();
     this.hero('Guest', 'Browsing without an account', 'G',
-      [[s.total_donors, 'Donors'], [s.total_banks, 'Centres'], ['12K+', 'Lives touched']]);
+      [[s.total_donors, 'Donors'], [s.total_banks, 'Centres'],
+       [visits != null ? visits.toLocaleString('en-IN') : '—', 'Visits']]);
 
     const team = [
       ['Dr. Akif Baig', 'CEO & Content Head', 'MBBS, DNB, DM (Cardiology)'],
