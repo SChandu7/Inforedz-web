@@ -49,7 +49,6 @@ const SplashPage = {
 
       Visits.track();
     setTimeout(type, 520);
-    document.getElementById('splashSkip').addEventListener('click', route);
   }
 };
 
