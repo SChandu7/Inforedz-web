@@ -214,7 +214,7 @@ const AuthPage = {
       UI.toast(err.message || 'Could not create the account.', 'error');
       btn.disabled = false; btn.textContent = 'Create account';
     }
-  }
+  },
 
      showForgot() {
     document.getElementById('loginPane').hidden = true;
