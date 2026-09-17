@@ -48,8 +48,57 @@
               <label for="loginPassword">Password</label>
               <input id="loginPassword" class="input" type="password" autocomplete="current-password" placeholder="Your password">
             </div>
-            <button class="btn btn--primary btn--block" type="submit">Sign in</button>
+                       <button class="btn btn--primary btn--block" type="submit">Sign in</button>
+            <p style="text-align:center;margin-top:14px">
+              <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
+            </p>
           </form>
+                  <!-- ===== FORGOT PASSWORD ===== -->
+        <section id="forgotPane" hidden>
+          <h3 style="margin-bottom:6px">Reset your password</h3>
+
+          <!-- Step 1: Email -->
+          <div id="fpStep1">
+            <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:16px">Enter the email you registered with and we will send a 6-digit OTP.</p>
+            <div class="field">
+              <label for="fpEmail">Email</label>
+              <input id="fpEmail" class="input" type="email" placeholder="you@example.com">
+            </div>
+            <button class="btn btn--primary btn--block" id="fpSendOtp">Send OTP</button>
+            <p style="text-align:center;margin-top:12px">
+              <button type="button" class="link-btn" id="fpBackToLogin">Back to sign in</button>
+            </p>
+          </div>
+
+          <!-- Step 2: OTP -->
+          <div id="fpStep2" hidden>
+            <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:16px">Enter the 6-digit OTP sent to <b id="fpEmailDisplay"></b></p>
+            <div class="field">
+              <label for="fpOtp">OTP</label>
+              <input id="fpOtp" class="input" type="text" inputmode="numeric" maxlength="6" placeholder="6-digit code">
+            </div>
+            <button class="btn btn--primary btn--block" id="fpVerifyOtp">Verify OTP</button>
+            <p style="text-align:center;margin-top:12px">
+              <button type="button" class="link-btn" id="fpResendOtp">Resend OTP</button>
+            </p>
+          </div>
+
+          <!-- Step 3: New Password -->
+          <div id="fpStep3" hidden>
+            <p style="font-size:13.5px;color:var(--ink-mid);margin-bottom:16px">OTP verified. Enter your new password.</p>
+            <div class="field">
+              <label for="fpNewPw">New password</label>
+              <input id="fpNewPw" class="input" type="password" placeholder="At least 6 characters">
+            </div>
+            <div class="field">
+              <label for="fpConfirmPw">Confirm password</label>
+              <input id="fpConfirmPw" class="input" type="password" placeholder="Same as above">
+            </div>
+            <button class="btn btn--primary btn--block" id="fpSetPw">Set new password</button>
+          </div>
+        </section>
+
+        <!-- ===== DIVIDER ===== -->
 
           <div class="divider-or">or</div>
           <button class="btn btn--ghost btn--block" id="guestBtn">Continue as guest</button>
