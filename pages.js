@@ -58,6 +58,8 @@ const SplashPage = {
 const AuthPage = {
   role: 'donor',
   picked: null,
+  _fpEmail: '',
+  _fpToken: '',
 
   init() {
     if (Auth.isLoggedIn) { location.replace('donors.html'); return; }
@@ -88,8 +90,16 @@ const AuthPage = {
       });
     });
 
-    this.setRole('donor');
+        this.setRole('donor');
     if (U.qs('tab') === 'register') this.showTab('register');
+
+    // Forgot password
+    document.getElementById('forgotBtn').addEventListener('click', () => this.showForgot());
+    document.getElementById('fpBackToLogin').addEventListener('click', () => this.showTab('login'));
+    document.getElementById('fpSendOtp').addEventListener('click', () => this.sendOtp());
+    document.getElementById('fpVerifyOtp').addEventListener('click', () => this.verifyOtp());
+    document.getElementById('fpResendOtp').addEventListener('click', () => this.sendOtp(true));
+    document.getElementById('fpSetPw').addEventListener('click', () => this.resetPassword());
   },
 
   showTab(tab) {
@@ -205,6 +215,102 @@ const AuthPage = {
       btn.disabled = false; btn.textContent = 'Create account';
     }
   }
+
+     showForgot() {
+    document.getElementById('loginPane').hidden = true;
+    document.getElementById('forgotPane').hidden = false;
+    document.getElementById('fpStep1').hidden = false;
+    document.getElementById('fpStep2').hidden = true;
+    document.getElementById('fpStep3').hidden = true;
+    document.querySelectorAll('.tabs__btn').forEach(b => b.classList.remove('is-on'));
+  },
+
+  async sendOtp(resend = false) {
+    const email = document.getElementById('fpEmail').value.trim().toLowerCase();
+    if (!email) { UI.toast('Enter your email address.', 'error'); return; }
+    this._fpEmail = email;
+
+    const btn = resend ? document.getElementById('fpResendOtp') : document.getElementById('fpSendOtp');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    try {
+      await fetch(CONFIG.API_BASE + '/forgot-password/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      }).then(r => r.json());
+
+      UI.toast('OTP sent to ' + email, 'success');
+      document.getElementById('fpEmailDisplay').textContent = email;
+      document.getElementById('fpStep1').hidden = true;
+      document.getElementById('fpStep2').hidden = false;
+      document.getElementById('fpOtp').value = '';
+      document.getElementById('fpOtp').focus();
+    } catch (e) {
+      UI.toast('Could not send OTP. Check your connection.', 'error');
+    }
+    btn.disabled = false; btn.textContent = orig;
+  },
+
+  async verifyOtp() {
+    const otp = document.getElementById('fpOtp').value.trim();
+    if (otp.length !== 6) { UI.toast('Enter the 6-digit OTP.', 'error'); return; }
+
+    const btn = document.getElementById('fpVerifyOtp');
+    btn.disabled = true; btn.textContent = 'Verifying…';
+
+    try {
+      const r = await fetch(CONFIG.API_BASE + '/verify-otp/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this._fpEmail, otp })
+      }).then(r => r.json());
+
+      if (!r.success) throw new Error(r.message || 'Invalid OTP.');
+      this._fpToken = r.data.reset_token;
+      UI.toast('OTP verified.', 'success');
+      document.getElementById('fpStep2').hidden = true;
+      document.getElementById('fpStep3').hidden = false;
+      document.getElementById('fpNewPw').focus();
+    } catch (e) {
+      UI.toast(e.message || 'OTP verification failed.', 'error');
+    }
+    btn.disabled = false; btn.textContent = 'Verify OTP';
+  },
+
+  async resetPassword() {
+    const pw  = document.getElementById('fpNewPw').value;
+    const pw2 = document.getElementById('fpConfirmPw').value;
+
+    if (pw.length < 6) { UI.toast('Password must be at least 6 characters.', 'error'); return; }
+    if (pw !== pw2)    { UI.toast('Passwords do not match.', 'error'); return; }
+
+    const btn = document.getElementById('fpSetPw');
+    btn.disabled = true; btn.textContent = 'Saving…';
+
+    try {
+      const r = await fetch(CONFIG.API_BASE + '/reset-password/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: this._fpEmail, reset_token: this._fpToken, new_password: pw })
+      }).then(r => r.json());
+
+      if (!r.success) throw new Error(r.message || 'Could not reset password.');
+      UI.toast('Password reset. Sign in with your new password.', 'success');
+      setTimeout(() => {
+        document.getElementById('forgotPane').hidden = true;
+        document.getElementById('loginPane').hidden = false;
+        document.getElementById('loginEmail').value = this._fpEmail;
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginPassword').focus();
+        document.querySelectorAll('.tabs__btn').forEach(b => b.classList.toggle('is-on', b.dataset.tab === 'login'));
+      }, 1400);
+    } catch (e) {
+      UI.toast(e.message || 'Reset failed.', 'error');
+    }
+    btn.disabled = false; btn.textContent = 'Set new password';
+  },
 };
 
 /* ------------------------------------------------------------
