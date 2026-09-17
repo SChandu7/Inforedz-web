@@ -37,8 +37,6 @@
 
         <!-- ===== LOGIN ===== -->
         <section id="loginPane">
-         
-
           <form id="loginForm" novalidate>
             <div class="field">
               <label for="loginEmail">Email</label>
@@ -48,12 +46,18 @@
               <label for="loginPassword">Password</label>
               <input id="loginPassword" class="input" type="password" autocomplete="current-password" placeholder="Your password">
             </div>
-                       <button class="btn btn--primary btn--block" type="submit">Sign in</button>
+            <button class="btn btn--primary btn--block" type="submit">Sign in</button>
             <p style="text-align:center;margin-top:14px">
               <button type="button" class="link-btn" id="forgotBtn">Forgot password?</button>
             </p>
           </form>
-                  <!-- ===== FORGOT PASSWORD ===== -->
+
+          <div class="divider-or">or</div>
+          <button class="btn btn--ghost btn--block" id="guestBtn">Continue as guest</button>
+          <p class="hint" style="text-align:center">Guests can browse everything. Contacting a donor needs an account.</p>
+        </section>
+
+        <!-- ===== FORGOT PASSWORD ===== -->
         <section id="forgotPane" hidden>
           <h3 style="margin-bottom:6px">Reset your password</h3>
 
@@ -96,13 +100,6 @@
             </div>
             <button class="btn btn--primary btn--block" id="fpSetPw">Set new password</button>
           </div>
-        </section>
-
-        <!-- ===== DIVIDER ===== -->
-
-          <div class="divider-or">or</div>
-          <button class="btn btn--ghost btn--block" id="guestBtn">Continue as guest</button>
-          <p class="hint" style="text-align:center">Guests can browse everything. Contacting a donor needs an account.</p>
         </section>
 
         <!-- ===== REGISTER ===== -->
